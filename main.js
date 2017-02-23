@@ -1,6 +1,6 @@
 //array containing movies
-var movieDatabase = {
-    movies: [
+var Module = (function(){
+    var movies = [
         {
             title: "Pulp Fiction",
             year: 1994,
@@ -37,8 +37,19 @@ var movieDatabase = {
             genres: ["Fantasy", "Adventure"],
             ratings: [10, 10, 10, 10, 10]
         }
-    ]
-};
+    ];
+
+    return {
+        getMovies: function(){
+            return movies;
+        }
+    }
+})();
+
+const logMovies = () => {
+    console.log(Module.getMovies());
+}
+document.getElementById("getMovies").addEventListener("click", logMovies);
 
 //konstruktar som används för att kunna skapa nya filmobjekt
 const addMovie = function(title, year, genres){
@@ -46,14 +57,14 @@ const addMovie = function(title, year, genres){
     this.year = year;
     this.genres = genres;
 };
+
 //skapar en ny film med funktionen addMovie
-const newMovie = function() {
+const newMovie = () => {
     //hämtar textfält för att mata in värden som argument
     let newTitle = document.getElementById("newTitle");
     let newYear = document.getElementById("newYear");
     let newGen = document.getElementById("newGenre");
-  //  let secondGen = document.getElementById("secondGenre");
-
+    //let secondGen = document.getElementById("secondGenre");
 
     //matar in genre och rating i arrayer
     let genArr = [];
@@ -65,13 +76,22 @@ const newMovie = function() {
     //skapar ny film utifrån konstruktorn newMovie
     let myMovie = new addMovie(newTitle.value, Number(newYear.value), genArr);
 
-    //lägger till den nya filmen i movieDatabase.movies
-    movieDatabase.movies.push(myMovie);
-    console.log(movieDatabase.movies)
-};
-
-
-
-
-
+    //lägger till den nya filmen i movies
+    Module.getMovies().push(myMovie);
+}
 document.getElementById("submitMovie").addEventListener("click", newMovie);
+
+//funktion för att betygsätta film
+const rateMovie = () => {
+    movie = Module.getMovies()[6];
+    rating = document.getElementById("rateValue");
+    //om filmen inte har några ratings skapar vi en tom array och pushar sedan in en rating
+    if(movie.ratings == undefined){
+        movie.ratings = [];
+        movie.ratings.push(Number(rating.value));
+    }
+    //har filmen redan ratings pushar vi in en ny rating i arrayen
+    else
+        movie.ratings.push(Number(rating.value));
+}
+document.getElementById("rateButton").addEventListener("click", rateMovie);
