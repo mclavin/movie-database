@@ -45,9 +45,25 @@ var Module = (function(){
         }
     }
 })();
-
+//funktion för att visa alla filmer i Module.movies
 const logMovies = () => {
-    console.log(Module.getMovies());
+    //hämtar diven som är container för alla filmtitlar
+    let movieList = document.getElementById("movieList");
+    //tömmer containern ifall man lägger till ny film och vill logga ut alla igen
+    movieList.innerHTML = "";
+    //loopar genom Module.movies och skriver ut alla filmtitlar, samt ger dem en input och button för rating
+    for (let i = 0; i < Module.getMovies().length; i++){
+        let movieTitle = document.createElement("p");
+        let rating = document.createElement("input");
+        //
+        rating.setAttribute("id", "movie" + i);
+        let rate = document.createElement("button");
+        rate.innerHTML = "Rate movie";
+        movieList.appendChild(movieTitle);
+        movieList.appendChild(rating);
+        movieList.appendChild(rate);
+        movieTitle.innerHTML = Module.getMovies()[i].title;
+    }
 }
 document.getElementById("getMovies").addEventListener("click", logMovies);
 
@@ -80,8 +96,8 @@ const newMovie = () => {
     Module.getMovies().push(myMovie);
 }
 document.getElementById("submitMovie").addEventListener("click", newMovie);
-
-//funktion för att betygsätta film
+/*
+//funktion för att betygsätta film. fixa argument
 const rateMovie = () => {
     movie = Module.getMovies()[6];
     rating = document.getElementById("rateValue");
@@ -94,4 +110,4 @@ const rateMovie = () => {
     else
         movie.ratings.push(Number(rating.value));
 }
-document.getElementById("rateButton").addEventListener("click", rateMovie);
+document.getElementById("rateButton").addEventListener("click", rateMovie);*/
