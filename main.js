@@ -1,4 +1,10 @@
-//array containing movies
+/**
+ * module pattern
+ *
+ * enkelt att återanvända/hantera kod
+ *
+ * håller variabler borta från global scope
+ */
 var Module = (function(){
     var movies = [
         {
@@ -53,21 +59,31 @@ const logMovies = () => {
     movieList.innerHTML = "";
     //loopar genom Module.movies och skriver ut alla filmtitlar, samt ger dem en input och button för rating
     for (let i = 0; i < Module.getMovies().length; i++){
-        let movieTitle = document.createElement("p");
-        let rating = document.createElement("input");
-        //
-        rating.setAttribute("id", "movie" + i);
-        let rate = document.createElement("button");
+        var movieWrapper = document.createElement("div");
+        movieWrapper.setAttribute("id", "movieWrapper");
+        var movieTitle = document.createElement("p");
+        var rating = document.createElement("input");
+        rating.setAttribute("class", "movieRating");
+        var rate = document.createElement("button");
+        rate.setAttribute("class", "rateButton");
         rate.innerHTML = "Rate movie";
-        movieList.appendChild(movieTitle);
-        movieList.appendChild(rating);
-        movieList.appendChild(rate);
+        movieList.appendChild(movieWrapper)
+        movieWrapper.appendChild(movieTitle);
+        movieWrapper.appendChild(rating);
+        movieWrapper.appendChild(rate);
         movieTitle.innerHTML = Module.getMovies()[i].title;
     }
 }
 document.getElementById("getMovies").addEventListener("click", logMovies);
 
-//konstruktar som används för att kunna skapa nya filmobjekt
+/**
+ * konstruktar som används för att kunna skapa nya filmobjekt
+ *
+ * konstruktor för att senare kunna  använda mig utav prototyper på filmobject
+ *
+ * nackdel med denna okonstruktor skulle vara om man vill skapa väldigt många filmer
+ * kommer samma kod köras lika många gånger
+ */
 const addMovie = function(title, year, genres){
     this.title = title;
     this.year = year;
@@ -96,18 +112,128 @@ const newMovie = () => {
     Module.getMovies().push(myMovie);
 }
 document.getElementById("submitMovie").addEventListener("click", newMovie);
-/*
-//funktion för att betygsätta film. fixa argument
-const rateMovie = () => {
-    movie = Module.getMovies()[6];
-    rating = document.getElementById("rateValue");
-    //om filmen inte har några ratings skapar vi en tom array och pushar sedan in en rating
-    if(movie.ratings == undefined){
-        movie.ratings = [];
-        movie.ratings.push(Number(rating.value));
+
+//funktion för att betygsätta film
+/**
+ * funktionen fungerar ej då jag försöker hämta event listener innan den har skapats
+ * har också svårt med att få inputfälten att hänga samman med rätt film
+ **/
+const rateMovie = () =>{
+    let movieRating = document.getElementsByClassName("movieRating");
+    for(let i = 0; i<Module.getMovies().length; i++){
+        if(Module.getMovies()[i].title = movieRating.previousSibling.nodeValue)
+            var movie = Module.getMovies()[i];
     }
-    //har filmen redan ratings pushar vi in en ny rating i arrayen
-    else
-        movie.ratings.push(Number(rating.value));
+    movie.ratings.push(Number(movieRating.nodeValue));
 }
-document.getElementById("rateButton").addEventListener("click", rateMovie);*/
+//document.getElementsByClassName("rateButton").addEventListener("click", rateMovie);
+
+
+//funktion för att hämta film med bäst rating
+const getTopRatedMovie = () => {
+    //jobbigt att skriva Module.getMovies(), sätter som variabel
+    let movies = Module.getMovies();
+    //värde som ändras om snittrating på den loopade filmen är högre än förra snittet
+    let topAvgRating = 0;
+    //loopar genom alla filmer
+    for (let i = 0; i < movies.length; i++){
+        //initierar 2 variabler för att lagra ratings/värden i
+        let avgRating = 0;
+        let totRating = 0;
+        //loopar genom ratings på en film för att lagra det totala värdet i totRating
+        for (let j = 0; j < movies[i].ratings.length; j++){
+            totRating += movies[i].ratings[j];
+        }
+        //räknar ut filmens snittrating
+        avgRating = totRating/movies[i].ratings.length;
+        //om filmens snittrating är den högsta snittrating sätts den som den högsta ratingen
+        //filmen titel med högst rating sparas i title
+        if(avgRating > topAvgRating){
+            topAvgRating = avgRating;
+            var title = movies[i].title;
+        }
+    }
+    //skriver ut filmen med höst rating
+    document.getElementById("bestOrWorst").innerHTML = `Filmen med högst rating är ${title}`;
+}
+document.getElementById("bestMovie").addEventListener("click", getTopRatedMovie);
+//funktion för att hämta film med sämst rating
+const getWorstRatedMovie = () => {
+    //sparar i variabel för att undvika långa rader
+    let movies = Module.getMovies();
+    //variabel för att hålla ett värde så att vi kan få en rating att jamföra med
+    let tempRating = 0;
+    //loopar genom första filmens ratings och lägger dem i tempRating
+    for(let i = 0; i < movies[0].ratings.length; i++){
+        tempRating += movies[0].ratings[i];
+    }
+    //sparar snittrating på första filmen i lowestAvgRating
+    let lowestAvgRating = tempRating/movies[0].ratings.length;
+    //loopar genom alla filmer
+    for (let i = 0; i < movies.length; i++){
+        //initierar 2 variabler för att lagra ratings/värden i
+        let avgRating = 0;
+        let totRating = 0;
+        //loopar genom ratings på filmen [i] och lagrar alla ratings i totRating
+        for (let j = 0; j < movies[i].ratings.length; j++){
+            totRating += movies[i].ratings[j];
+        }
+        //räknar ut filmen snittrating
+        avgRating = totRating/movies[i].ratings.length;
+        //om snittbetyget på filmen är lägre än den tidigare filems snitt sätts denn nya filmens rating som den lägsta
+        if(avgRating < lowestAvgRating){
+            lowestAvgRating = avgRating;
+            //sparar filmens titel med lägst rating i title
+            var title = movies[i].title;
+        }
+    }
+    //skriver ut filmen med lägst rating
+    document.getElementById("bestOrWorst").innerHTML = `Filmen med lägst rating är ${title}`;
+}
+document.getElementById("worstMovie").addEventListener("click", getWorstRatedMovie);
+//funktion för att hämta film efter årtal
+const getMoviesByThisYear = () => {
+    let movies = Module.getMovies();
+    //hämtar inputfältet där årtal ska matas in
+    let userYear = document.getElementById("year");
+    //div som ska ska hålla filmer efter önskat årtal
+    let yearDiv = document.getElementById("yearDiv");
+    //tömmer diven varje gång funktionen körs så att det inte ligger kvar gamla resultat när vi hämtar nya
+    yearDiv.innerHTML = "";
+    //loopat genom alla filmer
+    for (let i = 0; i < movies.length; i++){
+        //ser över om filmens årtal stämmer överens med användarens input
+        if (userYear.value == movies[i].year){
+            //om det är true skriver vi ut filmens titel på sidan
+            let p = document.createElement("p");
+            let t = document.createTextNode(movies[i].title);
+            yearDiv.appendChild(p);
+            p.appendChild(t);
+        }
+    }
+}
+document.getElementById("getMoviesByYear").addEventListener("click", getMoviesByThisYear);
+//funktion för att hämta film efter genre
+const getMoviesByGenre = () => {
+    //sparar alla filmer i movies
+    let movies = Module.getMovies();
+    //hämtar användarens input
+    let userGenre = document.getElementById("genre");
+    let genreDiv = document.getElementById("genreDiv");
+    //tömmer diven så att vi inte har kvar gamla filmer när vi hämtar nya
+    genreDiv.innerHTML = "";
+    //loopar vi genom alla filmer
+    for (let i = 0; i < movies.length; i++){
+        //loopar genom filmen [i]s genre
+        for (let j = 0; j < movies[i].genres.length; j++){
+            //jämför user input med genres i movie och skriver ut resultat
+            if (userGenre.value.toUpperCase() === movies[i].genres[j].toUpperCase()){
+                 let p = document.createElement("p");
+                 let t = document.createTextNode(movies[i].title);
+                 p.appendChild(t);
+                 genreDiv.appendChild(p);
+            }
+        }
+    }
+}
+document.getElementById("getMoviesByGenre").addEventListener("click", getMoviesByGenre);

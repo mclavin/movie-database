@@ -14,21 +14,30 @@
     <input type="text" id="newYear">
     <label>Genre:</label>
     <input type="text" id="newGenre">
-    <label>Second genre:</label>
-    <input type="text" placeholder="optional" id="secondGenre">
     <button id="submitMovie">Add movie</button>
 </div><br>
 <div>
     <button id="getMovies">Show all movies</button>
     <div id="movieList">
-
     </div>
 </div>
-<!--<div>
-    <label>Rate movie 1-10</label>
-    <input type="number" id="rateValue">
-    <button id="rateButton">Rate movie</button>
-</div>-->
+<div><br>
+    <button id="bestMovie">Get best rated movie</button>
+    <button id="worstMovie">Get worst rated movie</button>
+    <p id="bestOrWorst">Best or worst movie</p>
+</div>
+<div>
+    <label>Search by year</label>
+    <input type="text" id="year">
+    <button id="getMoviesByYear">Search</button>
+    <div id="yearDiv"></div>
+</div><br>
+<div>
+    <label>Search by genre</label>
+    <input type="text" id="genre">
+    <button id="getMoviesByGenre">Search</button>
+    <div id="genreDiv"></div>
+</div>
 <script src="main.js"></script>
 </body>
 </html>
