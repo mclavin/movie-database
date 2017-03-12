@@ -50,16 +50,25 @@ var Module = (function(){
      * inputfälten hittar ingen film i databasen
      **/
     const rateMovie = () =>{
-        console.log("wat");
-        for(let i = 0; i < movies.length; i++){
-            var movieRating = document.getElementsByClassName("movieRating");
-            var movieTitle = document.getElementsByClassName("movieTitle");
-            if(movieTitle == movies[i].title)
-                movies.ratings.push(Number(movieRating.value));
-            else
-                console.log("nej");
+        //filmdiv
+        let movieDiv = document.getElementsByClassName("movieWrapper");
+        //let movieRating = document.getElementsByClassName("movieRating");
+        console.log(movieDiv);
+        /**
+         * se om input kopplat till filmtitel (p) har ett värde
+         */
+
+        for (let i = 0; i < movieDiv.length; i++){
+            if (movieDiv[i].firstChild.innerHTML == movies[i].title && movieDiv[i].childNodes[1].value >= 1){
+                movies[i].ratings.push(Number(movieDiv[i].childNodes[1].value));
+                console.log(movies[i]);
+                //tömmer alla inputfält
+                movieDiv[i].childNodes[1].value = "";
+            }
+            else{
+                console.log("nope");
+            }
         }
-        console.log(movies);
     }
 
     //funktion för att visa alla filmer i Module.movies
@@ -71,23 +80,28 @@ var Module = (function(){
         //loopar genom Module.movies och skriver ut alla filmtitlar, samt ger dem en input och button för rating
         for (let i = 0; i < movies.length; i++){
             var movieWrapper = document.createElement("div");
-            movieWrapper.setAttribute("id", "movieWrapper");
+            movieWrapper.setAttribute("class", "movieWrapper");
             var movieTitle = document.createElement("p");
             movieTitle.setAttribute("class", "movieTitle");
             var rating = document.createElement("input");
             rating.setAttribute("class", "movieRating");
-            var rate = document.createElement("button");
-            rate.setAttribute("class", "rateButton");
-            rate.innerHTML = "Rate movie";
+            //var rate = document.createElement("button");
+            //rate.setAttribute("class", "rateButton");
+            //rate.innerHTML = "Rate movie";
             //Event listener på knappen
-            rate.addEventListener('click', rateMovie);
+            //rate.addEventListener('click', rateMovie);
             movieList.appendChild(movieWrapper);
             movieWrapper.appendChild(movieTitle);
             movieWrapper.appendChild(rating);
-            movieWrapper.appendChild(rate);
+            //movieWrapper.appendChild(rate);
             movieTitle.innerHTML = movies[i].title;
         }
 
+        var rate = document.createElement("button");
+        rate.setAttribute("class", "rateButton");
+        rate.innerHTML = "Rate movies";
+        rate.addEventListener('click', rateMovie);
+        movieList.appendChild(rate);
     }
     document.getElementById("getMovies").addEventListener("click", logMovies);
 
