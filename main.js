@@ -11,37 +11,43 @@ var Module = (function(){
             title: "Pulp Fiction",
             year: 1994,
             genres: ["Crime", "Drama"],
-            ratings: [9, 8, 10, 8, 9]
+            ratings: [9, 8, 10, 8, 9],
+            cover: "http://cdn.miramax.com/media/assets/Pulp-Fiction1.png"
         },
         {
             title: "Fight Club",
             year: 1999,
             genres: ["Drama"],
-            ratings: [8,9,8,9]
+            ratings: [8,9,8,9],
+            cover: "http://cdn.playbuzz.com/cdn/a99cfa7f-1267-42ca-9ae3-516d37c42005/fb69c47f-a441-4abd-932c-73503410383c.jpg"
         },
         {
             title: "Lord of the Rings: The Fellowship of the Ring",
             year: 2001,
             genres: ["Adventure", "Drama", "Fantasy"],
-            ratings: [7, 8, 9, 9, 10]
+            ratings: [7, 8, 9, 9, 10],
+            cover: "http://www.theclosetfeminist.ca/wp-content/uploads/2015/09/LOTR-movie-poster.jpeg"
         },
         {
             title: "Django Unchained",
             year: 2012,
             genres: ["Drama", "Western"],
-            ratings: [8, 8, 9]
+            ratings: [8, 8, 9],
+            cover: "http://www.impawards.com/2012/posters/django_unchained_ver9.jpg"
         },
         {
             title:"Sharknado 3: Oh Hell No!",
             year: 2015,
             genres: ["Horror", "Sci-Fi"],
-            ratings: [10, 1, 3, 1, 4]
+            ratings: [10, 1, 3, 1, 4],
+            cover: "https://images-na.ssl-images-amazon.com/images/M/MV5BMjIyNTQ5NjQ1OV5BMl5BanBnXkFtZTcwODg1MDU4OA@@._V1_UY1200_CR90,0,630,1200_AL_.jpg"
         },
         {
             title: "Pokémon: Mewtwo Returns",
             year: 2001,
             genres: ["Fantasy", "Adventure"],
-            ratings: [10, 10, 10, 10, 10]
+            ratings: [10, 10, 10, 10, 10],
+            cover: "https://s-media-cache-ak0.pinimg.com/564x/1b/be/94/1bbe9463d8943157a4ec871a4bc91312.jpg"
         }
     ];
 
@@ -85,15 +91,15 @@ var Module = (function(){
             movieTitle.setAttribute("class", "movieTitle");
             var rating = document.createElement("input");
             rating.setAttribute("class", "movieRating");
-            //var rate = document.createElement("button");
-            //rate.setAttribute("class", "rateButton");
-            //rate.innerHTML = "Rate movie";
-            //Event listener på knappen
-            //rate.addEventListener('click', rateMovie);
+
+            //försöker hitta bild
+            let img = document.createElement("img");
+            img.setAttribute("src", movies[i].cover.value);
+
             movieList.appendChild(movieWrapper);
             movieWrapper.appendChild(movieTitle);
             movieWrapper.appendChild(rating);
-            //movieWrapper.appendChild(rate);
+            movieWrapper.appendChild(img);
             movieTitle.innerHTML = movies[i].title;
         }
 
@@ -114,10 +120,11 @@ var Module = (function(){
      * nackdel med denna okonstruktor skulle vara om man vill skapa väldigt många filmer
      * kommer samma kod köras lika många gånger
      */
-    const createMovie = function(title, year, genres){
+    const createMovie = function(title, year, genres, cover){
         this.title = title;
         this.year = year;
         this.genres = genres;
+        this.cover = cover;
     };
 
     //skapar en ny film med funktionen createMovie
@@ -126,6 +133,7 @@ var Module = (function(){
         let newTitle = document.getElementById("newTitle");
         let newYear = document.getElementById("newYear");
         let newGen = document.getElementById("newGenre");
+        let newCover = document.getElementById("newCover");
         //let secondGen = document.getElementById("secondGenre");
 
         //matar in genre och rating i arrayer
@@ -136,10 +144,11 @@ var Module = (function(){
         })();
 
         //skapar ny film utifrån konstruktorn newMovie
-        let myMovie = new createMovie(newTitle.value, Number(newYear.value), genArr);
+        let myMovie = new createMovie(newTitle.value, Number(newYear.value), genArr, newCover.value);
 
         //lägger till den nya filmen i movies
         movies.push(myMovie);
+        console.log(movies);
     }
     document.getElementById("submitMovie").addEventListener("click", newMovie);
 
