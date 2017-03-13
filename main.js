@@ -91,23 +91,23 @@ var Module = (function(){
         let newYear = document.getElementById("newYear");
         let newGen = document.getElementById("newGenre");
         let newCover = document.getElementById("newCover");
-        //let secondGen = document.getElementById("secondGenre");
-
-        //matar in genre och rating i arrayer
+        //array för att lagra genres
         let genArr = [];
+        //variabel som filmen kommer lagras i
+        let myMovie;
 
+        //matar in genres i genre-arrayen
         (function () {
             genArr.push(newGen.value);
         })();
 
-        //skapar ny film utifrån konstruktorn newMovie
-        let myMovie = new createMovie(newTitle.value, Number(newYear.value), genArr, newCover.value);
+        //lagrar och skapar ny film i myMovie med hjälp av konstruktorn createMovie
+        myMovie = new createMovie(newTitle.value, Number(newYear.value), genArr, newCover.value);
 
         //lägger till den nya filmen i movies
         movies.push(myMovie);
         console.log(movies);
     }
-    document.getElementById("submitMovie").addEventListener("click", newMovie);
 
     //funktion för att betygsätta film
     const rateMovie = () =>{
@@ -129,108 +129,100 @@ var Module = (function(){
 
     //funktion för att visa alla filmer i Module.movies
     const getMovies = () => {
+        //tömmer diven så det inte kommer upp fler filmer än vad som skall visas
+        document.getElementById("movieList").innerHTML = "";
+
         //hämtar diven som är container för alla filmtitlar
         let movieList = document.getElementById("movieList").innerHTML = "";
         //loopar genom Module.movies och hämtar alla filmtitlar, ratings och omslag
 
         for (let i = 0; i < movies.length; i++){
             let titleT = document.createTextNode(movies[i].title);
-            let ratingT = document.createTextNode(movies[i].avgRating());
+            let ratingT = document.createTextNode(`Rating: ${movies[i].avgRating()}`);
             let img = document.createElement("img");
             img.src = movies[i].cover;
 
             //skickar data till printfunktion
             printMovies(titleT, ratingT, img);
         }
-        //callar på funktion för att skapa rateknapp
+        //kallar på funktion för att skapa rateknapp
         addRateButton();
     }
-    document.getElementById("getMovies").addEventListener("click", getMovies);
 
     //funktion för att hämta film med bäst rating
     const getTopRatedMovie = () => {
+        //tömmer diven så det inte kommer upp fler filmer än vad som skall visas
         document.getElementById("movieList").innerHTML = "";
-        //värde som ändras om snittrating på den loopade filmen är högre än förra snittet
-        let topAvgRating = 0;
-        //variabel för att spara bilda   dress
-        let img;
-        //hämtar div för att lägga bild i
-        let bestOrWorstCont = document.getElementById("bestOrWorstCont");
-        //loopar genom alla filmer
-        for (let i = 0; i < movies.length; i++){
-            if(movies[i].ratings == undefined){
-                movies[i].ratings = [];
-            }
-            //initierar 2 variabler för att lagra ratings/värden i
-            let avgRating = 0;
-            let totRating = 0;
-            //loopar genom ratings på en film för att lagra det totala värdet i totRating
-            for (let j = 0; j < movies[i].ratings.length; j++){
-                totRating += movies[i].ratings[j];
-            }
-            //räknar ut filmens snittrating
-            avgRating = totRating/movies[i].ratings.length;
-            //om filmens snittrating är den högsta snittrating sätts den som den högsta ratingen
-            //filmen titel med högst rating sparas i title
-            if(avgRating > topAvgRating){
-                topAvgRating = avgRating;
-                var topTitleT = document.createTextNode(movies[i].title);
-                var topRatingT = document.createTextNode(`Rating: ${movies[i].avgRating()}`);
-                var topImg = document.createElement("img");
-                topImg.src = movies[i].cover;
+
+        //hämtar ett startvärde för att kunna fämföra
+        let myRating = movies[0].avgRating();
+        let titleT;
+        let ratingT;
+        let img = document.createElement("img");
+
+        //loopar alla filmer och ser om snittrating på filmen [i] är högre än det föregående
+        for (let i = 0; i < movies.length; i++) {
+            /**
+             * är snittet högre sätter vi filmen [i]'s rating som det nya "startvärdet"
+             * sätter även värden på textnoder och sökväg till bild
+            */
+             if (movies[i].avgRating() > myRating){
+                myRating = movies[i].avgRating();
+
+                titleT = document.createTextNode(movies[i].title);
+                ratingT = document.createTextNode(`Rating: ${myRating}`);
+                img.src = movies[i].cover;
             }
         }
-        //skickar film till printfunktion
-        printMovies(topTitleT, topRatingT, topImg);
+
+        //skickar data till printfunktion
+        printMovies(titleT, ratingT, img);
+
+        //kallar på funktion för att sätta ut  rateknapp
         addRateButton();
     }
-    document.getElementById("bestMovie").addEventListener("click", getTopRatedMovie);
 
     //funktion för att hämta film med sämst rating
     const getWorstRatedMovie = () => {
+        //tömmer diven så det inte kommer upp fler filmer än vad som skall visas
         document.getElementById("movieList").innerHTML = "";
-        //variabel för att hålla ett värde så att vi kan få en rating att jamföra med
-        let tempRating = 0;
-        //loopar genom första filmens ratings och lägger dem i tempRating
-        for(let i = 0; i < movies[0].ratings.length; i++){
-            tempRating += movies[0].ratings[i];
-        }
-        //sparar snittrating på första filmen i lowestAvgRating
-        let lowestAvgRating = tempRating/movies[0].ratings.length;
-        //loopar genom alla filmer
-        for (let i = 0; i < movies.length; i++){
-            //
-            if(movies[i].ratings == undefined){
-                movies[i].ratings = [];
-            }
-            //initierar 2 variabler för att lagra ratings/värden i
-            let avgRating = 0;
-            let totRating = 0;
-            //loopar genom ratings på filmen [i] och lagrar alla ratings i totRating
-            for (let j = 0; j < movies[i].ratings.length; j++){
-                totRating += movies[i].ratings[j];
-            }
-            //räknar ut filmen snittrating
-            avgRating = totRating/movies[i].ratings.length;
-            //om snittbetyget på filmen är lägre än den tidigare filems snitt sätts denn nya filmens rating som den lägsta
-            if(avgRating < lowestAvgRating){
-                var lowTitleT = document.createTextNode(movies[i].title);
-                var lowRatingT = document.createTextNode(`Rating: ${movies[i].avgRating()}`);
-                var lowImg = document.createElement("img");
-                lowImg.src = movies[i].cover;
+
+        //hämtar ett startvärde för att kunna fämföra
+        let myRating = movies[0].avgRating();
+        let titleT;
+        let ratingT;
+        let img = document.createElement("img");
+
+        //loopar alla filmer och ser om snittrating på filmen [i] är lägre än det föregående
+        for (let i = 0; i < movies.length; i++) {
+            /**
+             * är snittet lägre sätter vi filmen [i]'s rating som det nya "startvärdet"
+             * sätter även värden på textnoder och sökväg till bild
+             */
+            if (movies[i].avgRating() < myRating){
+                myRating = movies[i].avgRating();
+
+                titleT = document.createTextNode(movies[i].title);
+                ratingT = document.createTextNode(`Rating: ${myRating}`);
+                img.src = movies[i].cover;
             }
         }
-        //skickar till funktion för att skriva ut filmer
-        printMovies(lowTitleT, lowRatingT, lowImg);
+
+        //skickar data till printfunktion
+        printMovies(titleT, ratingT, img);
+
+        //kallar på funktion för att sätta ut  rateknapp
         addRateButton();
     }
-    document.getElementById("worstMovie").addEventListener("click", getWorstRatedMovie);
 
     //funktion för att hämta film efter årtal
     const getMoviesByThisYear = () => {
+        //tömmer diven så det inte kommer upp fler filmer än vad som skall visas
         document.getElementById("movieList").innerHTML = "";
+
         //hämtar inputfältet där årtal ska matas in
         let userYear = document.getElementById("year");
+
         //loopat genom alla filmer
         for (let i = 0; i < movies.length; i++){
             //ser över om filmens årtal stämmer överens med användarens input
@@ -240,20 +232,23 @@ var Module = (function(){
                 let ratingT = document.createTextNode(`Rating: ${movies[i].avgRating()}`);
                 let img = document.createElement("img");
                 img.src = movies[i].cover;
+
                 //skickar till printfunktion
                 printMovies(titleT, ratingT, img);
             }
         }
+        //kallar på funktion som skriver sätter ut rateknapp
         addRateButton();
     }
-    document.getElementById("getMoviesByYear").addEventListener("click", getMoviesByThisYear);
 
     //funktion för att hämta film efter genre
     const getMoviesByGenre = () => {
+        //tömmer diven så det inte kommer upp fler filmer än vad som skall visas
         document.getElementById("movieList").innerHTML = "";
+
         //hämtar användarens input
-        var userGenre = document.getElementById("genre");
-        let genreDiv = document.getElementById("genreDiv");
+        let userGenre = document.getElementById("genre");
+
         //loopar vi genom alla filmer
         for (let i = 0; i < movies.length; i++){
             //loopar genom filmen [i]s genre
@@ -264,11 +259,13 @@ var Module = (function(){
                     let ratingT = document.createTextNode(`Rating: ${movies[i].avgRating()}`);
                     let img = document.createElement("img");
                     img.src = movies[i].cover;
+
                     //skickar till funtion för att printa
                     printMovies(titleT, ratingT, img);
                 }
             }
         }
+        //kallar på funktion som sätter ut rateknapp
         addRateButton();
     }
 
@@ -294,36 +291,25 @@ var Module = (function(){
         document.getElementById("movieList").appendChild(movieWrapper);
     }
 
+    //sätter ut en rateknapp
     const addRateButton = () => {
+        let movieList = document.getElementById("movieList");
         let rate = document.createElement("button");
+
         rate.setAttribute("id", "rateButton");
         rate.innerHTML = "Rate";
         rate.addEventListener('click', rateMovie);
+
         //om knappen redan finns tar vi först bort den innan vi lägger till en ny
         movieList.parentNode.removeChild(movieList.parentNode.childNodes[2]);
         movieList.parentNode.appendChild(rate);
-        console.log(movies);
     }
 
-/*
-    //funktion för att printa bästa eller sämsta filmen
-    const printBestOrWorstMovie = (p, t, img) => {
-        let movieWrapper = document.createElement("div");
-        movieWrapper.setAttribute("class", "movieWrapper");
-        let rating = document.createElement("input");
-        rating.setAttribute("class", "movieRating");
-        rating.setAttribute("placeholder", "rate from 1-10");
-
-        p.appendChild(t);
-        movieWrapper.appendChild(img);
-        movieWrapper.appendChild(rating);
-        movieWrapper.appendChild(p);
-        //movieWrapper.appendChild(avgRating);
-
-        document.getElementById("movieList").appendChild(movieWrapper);
-
-    }
-    */
+    document.getElementById("getMovies").addEventListener("click", getMovies);
+    document.getElementById("bestMovie").addEventListener("click", getTopRatedMovie);
+    document.getElementById("worstMovie").addEventListener("click", getWorstRatedMovie);
+    document.getElementById("getMoviesByYear").addEventListener("click", getMoviesByThisYear);
+    document.getElementById("submitMovie").addEventListener("click", newMovie);
     document.getElementById("getMoviesByGenre").addEventListener("click", getMoviesByGenre);
 
 })();
