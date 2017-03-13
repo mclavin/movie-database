@@ -1,0 +1,93 @@
+body{
+    margin: -1em 0 0 0;
+    padding: 0;
+}
+
+img {
+    width: 13em;
+}
+
+nav{
+    background-color: #2aabd2;
+    height: 6em;
+    width: 100%;
+    margin: 0 auto;
+}
+
+button{
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition: all ease 0.4s;
+}
+
+button:hover{
+    background-color: #1b613b;
+}
+
+input{
+    height: 3.1em;
+    margin: -0.5em -3em 0 0;
+}
+
+.navbar{
+    padding: 1.3em 0 0 0;
+    text-align: center;
+    list-style: none;
+}
+
+.navbar li{
+    margin: 0 1em 0 1em;
+    display: inline;
+}
+
+.movieWrapper{
+    align-items: center;
+    text-align: center;
+    width: 15em;
+    display: flex;
+    flex-direction: column;
+}
+
+.movieWrapper input{
+    width: 15.3em;
+    margin: 1em 0 0 0;
+}
+
+.yearAndGenre{
+
+}
+
+#big-container{
+    margin-top: 3em;
+    width: 100%;
+    text-align: center;
+}
+
+#movieList{
+    justify-content: space-around;
+    display: flex;
+    flex-flow: row wrap;
+
+}
+
+#rateButton{
+    margin: 1em auto;
+    display: block;
+    width: 20em;
+}
+
+#add-movie{
+    margin: 4em 0 0 2em;
+    width: 100%;
+    text-align: center;
+}
+
+#add-movie input{
+    margin: 0 3em 0 0;
+}

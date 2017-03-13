@@ -40,7 +40,7 @@ var Module = (function(){
             year: 2015,
             genres: ["Horror", "Sci-Fi"],
             ratings: [10, 1, 3, 1, 4],
-            cover: "https://images-na.ssl-images-amazon.com/images/M/MV5BMjIyNTQ5NjQ1OV5BMl5BanBnXkFtZTcwODg1MDU4OA@@._V1_UY1200_CR90,0,630,1200_AL_.jpg"
+            cover: "http://www.gstatic.com/tv/thumb/movieposters/11560110/p11560110_p_v8_aa.jpg"
         },
         {
             title: "Pokémon: Mewtwo Returns",
@@ -52,29 +52,19 @@ var Module = (function(){
     ];
 
     //funktion för att betygsätta film
-    /**
-     * inputfälten hittar ingen film i databasen
-     **/
     const rateMovie = () =>{
         //filmdiv
         let movieDiv = document.getElementsByClassName("movieWrapper");
-        //let movieRating = document.getElementsByClassName("movieRating");
-        console.log(movieDiv);
-        /**
-         * se om input kopplat till filmtitel (p) har ett värde
-         */
 
+        //se om input kopplat till filmtitel (p) har ett värde
         for (let i = 0; i < movieDiv.length; i++){
             if (movieDiv[i].firstChild.innerHTML == movies[i].title && movieDiv[i].childNodes[1].value >= 1){
                 movies[i].ratings.push(Number(movieDiv[i].childNodes[1].value));
-                console.log(movies[i]);
                 //tömmer alla inputfält
                 movieDiv[i].childNodes[1].value = "";
             }
-            else{
-                console.log("nope");
-            }
         }
+        console.log(movies);
     }
 
     //funktion för att visa alla filmer i Module.movies
@@ -85,32 +75,32 @@ var Module = (function(){
         movieList.innerHTML = "";
         //loopar genom Module.movies och skriver ut alla filmtitlar, samt ger dem en input och button för rating
         for (let i = 0; i < movies.length; i++){
-            var movieWrapper = document.createElement("div");
+            let movieWrapper = document.createElement("div");
             movieWrapper.setAttribute("class", "movieWrapper");
-            var movieTitle = document.createElement("p");
+            let movieTitle = document.createElement("p");
             movieTitle.setAttribute("class", "movieTitle");
-            var rating = document.createElement("input");
+            let rating = document.createElement("input");
             rating.setAttribute("class", "movieRating");
-
-            //försöker hitta bild
+            rating.setAttribute("placeholder", "rate from 1-10");
             let img = document.createElement("img");
-            img.setAttribute("src", movies[i].cover.value);
-
+            img.src = movies[i].cover;
             movieList.appendChild(movieWrapper);
-            movieWrapper.appendChild(movieTitle);
-            movieWrapper.appendChild(rating);
             movieWrapper.appendChild(img);
+            movieWrapper.appendChild(rating);
+            movieWrapper.appendChild(movieTitle);
             movieTitle.innerHTML = movies[i].title;
         }
-
-        var rate = document.createElement("button");
-        rate.setAttribute("class", "rateButton");
+        let rate = document.createElement("button");
+        rate.setAttribute("id", "rateButton");
         rate.innerHTML = "Rate movies";
         rate.addEventListener('click', rateMovie);
-        movieList.appendChild(rate);
+        //om knappen redan finns tar vi först bort den innan vi lägger till en ny
+        movieList.parentNode.removeChild(movieList.parentNode.childNodes[2]);
+        movieList.parentNode.appendChild(rate);
+
+
     }
     document.getElementById("getMovies").addEventListener("click", logMovies);
-
 
     /**
      * konstruktar som används för att kunna skapa nya filmobjekt
@@ -156,9 +146,12 @@ var Module = (function(){
     const getTopRatedMovie = () => {
         //värde som ändras om snittrating på den loopade filmen är högre än förra snittet
         let topAvgRating = 0;
+        //variabel för att spara bilda   dress
+        let img;
+        //hämtar div för att lägga bild i
+        let bestOrWorstCont = document.getElementById("bestOrWorstCont");
         //loopar genom alla filmer
         for (let i = 0; i < movies.length; i++){
-            //
             if(movies[i].ratings == undefined){
                 movies[i].ratings = [];
             }
@@ -176,10 +169,11 @@ var Module = (function(){
             if(avgRating > topAvgRating){
                 topAvgRating = avgRating;
                 var title = movies[i].title;
+                img = movies[i].cover;
             }
         }
-        //skriver ut filmen med höst rating
-        document.getElementById("bestOrWorst").innerHTML = `Filmen med högst rating är ${title} med en rating på ${topAvgRating}`;
+        //skickar film till printfunktion
+        printBestOrWorstMovie(title, topAvgRating, img);
     }
     document.getElementById("bestMovie").addEventListener("click", getTopRatedMovie);
 
@@ -187,6 +181,8 @@ var Module = (function(){
     const getWorstRatedMovie = () => {
         //variabel för att hålla ett värde så att vi kan få en rating att jamföra med
         let tempRating = 0;
+        //skapar variabel för bildadress
+        let img
         //loopar genom första filmens ratings och lägger dem i tempRating
         for(let i = 0; i < movies[0].ratings.length; i++){
             tempRating += movies[0].ratings[i];
@@ -213,10 +209,12 @@ var Module = (function(){
                 lowestAvgRating = avgRating;
                 //sparar filmens titel med lägst rating i title
                 var title = movies[i].title;
+                //hämtar bildens källa
+                img = movies[i].cover;
             }
         }
-        //skriver ut filmen med lägst rating
-        document.getElementById("bestOrWorst").innerHTML = `Filmen med lägst rating är ${title} med en rating på ${lowestAvgRating}`;
+        //skickar till funktion för att skriva ut filmer
+        printBestOrWorstMovie(title, lowestAvgRating, img);
     }
     document.getElementById("worstMovie").addEventListener("click", getWorstRatedMovie);
 
@@ -232,11 +230,12 @@ var Module = (function(){
         for (let i = 0; i < movies.length; i++){
             //ser över om filmens årtal stämmer överens med användarens input
             if (userYear.value == movies[i].year){
-                //om det är true skriver vi ut filmens titel på sidan
+                //om det är true sparar vi variabler och skickar dem till utskrivningsfunktion
                 let p = document.createElement("p");
                 let t = document.createTextNode(movies[i].title);
-                yearDiv.appendChild(p);
-                p.appendChild(t);
+                let img = document.createElement("img");
+                img.src = movies[i].cover;
+                printMoviesByYearOrGenre(p, t, img, yearDiv);
             }
         }
     }
@@ -244,10 +243,8 @@ var Module = (function(){
 
     //funktion för att hämta film efter genre
     const getMoviesByGenre = () => {
-        //sparar alla filmer i movies
-        let movies = Module.getMovies();
         //hämtar användarens input
-        let userGenre = document.getElementById("genre");
+        var userGenre = document.getElementById("genre");
         let genreDiv = document.getElementById("genreDiv");
         //tömmer diven så att vi inte har kvar gamla filmer när vi hämtar nya
         genreDiv.innerHTML = "";
@@ -255,21 +252,33 @@ var Module = (function(){
         for (let i = 0; i < movies.length; i++){
             //loopar genom filmen [i]s genre
             for (let j = 0; j < movies[i].genres.length; j++){
-                //jämför user input med genres i movie och skriver ut resultat
+                //jämför user input med genres i movie och sparar resultat
                 if (userGenre.value.toUpperCase() === movies[i].genres[j].toUpperCase()){
                     let p = document.createElement("p");
                     let t = document.createTextNode(movies[i].title);
-                    p.appendChild(t);
-                    genreDiv.appendChild(p);
+                    let img = document.createElement("img");
+                    img.src = movies[i].cover;
+                    //skickar till funtion för att printa
+                    printMoviesByYearOrGenre(p, t, img, genreDiv);
                 }
             }
         }
     }
-    document.getElementById("getMoviesByGenre").addEventListener("click", getMoviesByGenre);
 
-    return {
-        getMovies: function(){
-            return movies;
-        }
+    //printar filmer efter år eller genre
+    const printMoviesByYearOrGenre = (p, t, img ,div) => {
+        p.appendChild(t);
+        div.appendChild(p);
+        div.appendChild(img);
     }
+
+    //funktion för att printa bästa eller sämsta filmen
+    const printBestOrWorstMovie = (title, rating, img) => {
+        //hämtar divför att visa bilden
+        let bestOrWorstCont = document.getElementById("bestOrWorstCont");
+        document.getElementById("bestOrWorst").innerHTML = `Filmen med lägst rating är ${title} med en rating på ${rating}`;
+        document.getElementById("bestOrWorstCover").src = img;
+    }
+
+    document.getElementById("getMoviesByGenre").addEventListener("click", getMoviesByGenre);
 })();

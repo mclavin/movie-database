@@ -6,39 +6,39 @@
     <title>Movie database</title>
 </head>
 <body>
-<div>
-    <h2>Lägg till film i Movie database</h2>
-    <label>Title:</label>
-    <input type="text" id="newTitle">
-    <label>Year:</label>
-    <input type="text" id="newYear">
-    <label>Genre:</label>
-    <input type="text" id="newGenre">
-    <label>Cover url:</label>
-    <input type="text" id="newCover">
-    <button id="submitMovie">Add movie</button>
-</div><br>
-<div>
-    <button id="getMovies">Show all movies</button>
+<nav>
+    <ul class="navbar">
+        <li><button id="getMovies">Show all movies</button></li>
+        <li><button id="bestMovie">Get best rated movie</button></li>
+        <li><button id="worstMovie">Get worst rated movie</button></li>
+        <li><input type="text" id="year" class="input" placeholder="search by year"></li>
+        <li><button id="getMoviesByYear">Search</button></li>
+        <li><input type="text" id="genre" class="input" placeholder="search by genre"></li>
+        <li><button id="getMoviesByGenre">Search</button></li>
+    </ul>
+</nav>
+<div id="big-container">
     <div id="movieList">
     </div>
+
 </div>
-<div><br>
-    <button id="bestMovie">Get best rated movie</button>
-    <button id="worstMovie">Get worst rated movie</button>
-    <p id="bestOrWorst">Best or worst movie</p>
+<div id="bestOrWorstCont"><br>
+    <p id="bestOrWorst"></p>
+    <img id="bestOrWorstCover">
 </div>
 <div>
-    <label>Search by year</label>
-    <input type="text" id="year">
-    <button id="getMoviesByYear">Search</button>
-    <div id="yearDiv"></div>
+    <div id="yearDiv" class="yearAndGenre"></div>
 </div><br>
 <div>
-    <label>Search by genre</label>
-    <input type="text" id="genre">
-    <button id="getMoviesByGenre">Search</button>
-    <div id="genreDiv"></div>
+    <div id="genreDiv" class="yearAndGenre"></div>
+</div>
+<div id="add-movie">
+    <h2>Lägg till film i Movie database</h2>
+    <input type="text" id="newTitle" placeholder="title">
+    <input type="text" id="newYear" placeholder="year">
+    <input type="text" id="newGenre" placeholder="genre">
+    <input type="text" id="newCover" placeholder="cover url">
+    <button id="submitMovie">Add movie</button>
 </div>
 <script src="main.js"></script>
 </body>
