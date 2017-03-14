@@ -59,11 +59,12 @@ var Module = (function(){
      * nackdel med denna okonstruktor skulle vara om man vill skapa väldigt många filmer
      * kommer samma kod köras lika många gånger
      */
-    const createMovie = function(title, year, genres, cover){
+    const createMovie = function(title, year, genres, cover, ratings){
         this.title = title;
         this.year = year;
         this.genres = genres;
         this.cover = cover;
+        this.ratings = ratings;
     };
 
     /**
@@ -74,7 +75,9 @@ var Module = (function(){
     Object.prototype.avgRating = function() {
         let totValue = 0;
         let avgRating;
-        //räknar ut filmens totala rating
+        /**
+         * räknar ut filmens totala rating
+        */
         for (let i = 0; i < this.ratings.length; i++){
             totValue += this.ratings[i];
         }
@@ -82,6 +85,7 @@ var Module = (function(){
         avgRating = totValue/this.ratings.length;
         //returnerar snittet
         return avgRating;
+
     };
 
     //skapar en ny film med funktionen createMovie
@@ -101,8 +105,11 @@ var Module = (function(){
             genArr.push(newGen.value);
         })();
 
+        //skapar en tom ratingsarray
+        let rateArr = []
+
         //lagrar och skapar ny film i myMovie med hjälp av konstruktorn createMovie
-        myMovie = new createMovie(newTitle.value, Number(newYear.value), genArr, newCover.value);
+        myMovie = new createMovie(newTitle.value, Number(newYear.value), genArr, newCover.value, rateArr);
 
         //lägger till den nya filmen i movies
         movies.push(myMovie);
@@ -122,6 +129,7 @@ var Module = (function(){
                 //om en titel i DOMen är like med en i databasen pushar vi in värdet på titels inputfält
                 if (title[i].innerHTML == movies[j].title && movieRating[i].value > 0) {
                     movies[j].ratings.push(Number(movieRating[i].value));
+                    movieRating[i].value = "";
                 }
             }
         }
@@ -138,9 +146,17 @@ var Module = (function(){
 
         for (let i = 0; i < movies.length; i++){
             let titleT = document.createTextNode(movies[i].title);
-            let ratingT = document.createTextNode(`Rating: ${movies[i].avgRating()}`);
+            let ratingT;
+            if (isNaN(movies[i].avgRating())) {
+                ratingT = document.createTextNode("No rating");
+            }
+            else {
+                ratingT = document.createTextNode(`Rating: ${movies[i].avgRating().toFixed(1)}`);
+            }
+            console.log(ratingT);
             let img = document.createElement("img");
             img.src = movies[i].cover;
+
 
             //skickar data till printfunktion
             printMovies(titleT, ratingT, img);
@@ -170,7 +186,12 @@ var Module = (function(){
                 myRating = movies[i].avgRating();
 
                 titleT = document.createTextNode(movies[i].title);
-                ratingT = document.createTextNode(`Rating: ${myRating}`);
+                if (isNaN(movies[i].avgRating())) {
+                    ratingT = document.createTextNode("No rating");
+                }
+                else {
+                    ratingT = document.createTextNode(`Rating: ${myRating.toFixed(1)}`);
+                }
                 img.src = movies[i].cover;
             }
         }
@@ -201,9 +222,13 @@ var Module = (function(){
              */
             if (movies[i].avgRating() < myRating){
                 myRating = movies[i].avgRating();
-
                 titleT = document.createTextNode(movies[i].title);
-                ratingT = document.createTextNode(`Rating: ${myRating}`);
+                if (isNaN(movies[i].avgRating())) {
+                    ratingT = document.createTextNode("No rating");
+                }
+                else {
+                    ratingT = document.createTextNode(`Rating: ${myRating.toFixed(1)}`);
+                }
                 img.src = movies[i].cover;
             }
         }
@@ -229,7 +254,13 @@ var Module = (function(){
             if (userYear.value == movies[i].year){
                 //om det är true sparar vi variabler och skickar dem till utskrivningsfunktion
                 let titleT = document.createTextNode(movies[i].title);
-                let ratingT = document.createTextNode(`Rating: ${movies[i].avgRating()}`);
+                let ratingT;
+                if (isNaN(movies[i].avgRating())) {
+                    ratingT = document.createTextNode("No rating");
+                }
+                else {
+                    ratingT = document.createTextNode(`Rating: ${movies[i].avgRating().toFixed(1)}`);
+                }
                 let img = document.createElement("img");
                 img.src = movies[i].cover;
 
@@ -256,7 +287,13 @@ var Module = (function(){
                 //jämför user input med genres i movie och sparar resultat
                 if (userGenre.value.toUpperCase() === movies[i].genres[j].toUpperCase()){
                     let titleT = document.createTextNode(movies[i].title);
-                    let ratingT = document.createTextNode(`Rating: ${movies[i].avgRating()}`);
+                    let ratingT;
+                    if (isNaN(movies[i].avgRating())) {
+                        ratingT = document.createTextNode("No rating");
+                    }
+                    else {
+                        ratingT = document.createTextNode(`Rating: ${movies[i].avgRating().toFixed(1)}`);
+                    }
                     let img = document.createElement("img");
                     img.src = movies[i].cover;
 
