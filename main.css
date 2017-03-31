@@ -30,6 +30,7 @@ button{
 
 button:hover{
     background-color: #1b613b;
+    cursor: pointer;
 }
 
 input{
@@ -70,6 +71,16 @@ input{
     margin: 1em 0 0 0;
 }
 
+.movieWrapper ul{
+    list-style-type: none;
+    text-align: left;
+    margin-right: 3em;
+}
+
+.movieWrapper li:hover{
+    text-decoration: line-through;
+}
+
 #big-container{
     margin-top: 3em;
     width: 100%;
@@ -97,4 +108,13 @@ input{
 
 #add-movie input{
     margin: 0 3em 0 0;
+}
+
+#inputGenre{
+
+}
+
+#buttonGenre{
+    display: inline;
+    margin: 20px 0 20px 0;
 }
