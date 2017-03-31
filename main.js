@@ -113,7 +113,6 @@ var Module = (function(){
 
         //lägger till den nya filmen i movies
         movies.push(myMovie);
-        console.log(movies);
     }
 
     //funktion för att betygsätta film
@@ -334,7 +333,6 @@ var Module = (function(){
 
         let genresUl = document.createElement("ul");
         for(let i = 0; i < genres.length; i++){
-            //console.log(genres);
             let genreLi = document.createElement("li");
             let genre = document.createTextNode(genres[i]);
 
@@ -381,9 +379,8 @@ var Module = (function(){
      */
     function addNewGenre () {
         let genreToAdd = this.previousSibling.value;
-        console.log(genreToAdd);
         for(let i = 0; i < movies.length; i++){
-            if(movies[i].title == this.parentNode.children[2].innerHTML){
+            if(movies[i].title == this.parentNode.parentNode.children[2].innerHTML){
                 movies[i].genres.push(genreToAdd);
             }
         }
